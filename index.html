@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+  <head>
+    <title>Demo</title>
+    <base href="/" />
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>    
+    <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+    <script src="https://steemit.github.io/sc2-angular/sc2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="SC2Utils.js"></script>
+    
+    <style>
+      hr { margin: 40px 0; }
+      h3 { margin-bottom: 20px; }
+    </style>
+  </head>
+
+  <body>
+    <div id="vm">
+
+      <!-- Handle Login/Logout button -->
+      <a v-if="steemconnect.user == null" :href="loginUrl">Login</a>
+      <a v-if="steemconnect.user != null" @click="logout">Logout</a>
+      
+      <!-- Show some user data -->
+      <div v-if="steemconnect.user != null">
+        <div>
+          username : {{ steemconnect.user.name }}
+        </div>
+        <div>
+          reputation : {{ steem.formatter.reputation(steemconnect.user.reputation) }}
+        </div>
+        <div>
+          created : {{ formatDate(steemconnect.user.created) }}
+        </div>
+
+        <hr/>
+
+        <div>
+          <button @click="follow('comprendre-steem')">Follow @comprendre-steem</button>
+          <button @click="unfollow('comprendre-steem')">Unfollow @comprendre-steem</button>
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+
+  <script>
+    // Parse URL to look after SC2 returned values
+    params = (new URL(location)).searchParams;
+    if (params.get('access_token') != null) 
+      $.cookie("access_token", params.get('access_token'), { expires: 7, path: '/' });
+    if (params.get('username') != null) 
+      $.cookie("username", params.get('username'), { expires: 7, path: '/' });
+    if (params.get('expires_in') != null) 
+      $.cookie("expires_in", params.get('expires_in'), { expires: 7, path: '/' });
+
+    // initialize SteemConnect v2
+    sc2.init({
+      app: 'worldmap.app',
+      callbackURL: 'http://localhost/',
+      scope: ['vote', 'comment', 'custom_json'],
+      //access: $.cookie("access_token")  // requires latest version ?
+    });
+
+    // Need to define an object that will be observed for changes by Vue.js
+    var steemconnect = {};
+    steemconnect.user = null;
+    steemconnect.metadata = null;
+
+    // Request user details if token is available
+    if ($.cookie("access_token") != null) {
+      sc2.setAccessToken($.cookie("access_token"));
+      sc2.me(function (err, result) {
+        // console.log('/me', err, result); // DEBUG
+        if (!err) {
+          // Fill the steemconnect placeholder with results
+          steemconnect.user = result.account;
+          steemconnect.metadata = JSON.stringify(result.user_metadata, null, 2);
+        }
+      });
+    };
+
+    // Initialize the Vue
+    var vm = new Vue({
+      el: '#vm',
+      data: {
+        loginUrl: sc2.getLoginURL(),
+        steemconnect: steemconnect
+      },
+      methods: {
+        logout: function() {
+          sc2.revokeToken(function (err, result) {
+            console.log('You successfully logged out', err, result);
+            // Remove all cookies
+            $.cookie("access_token", null);
+            $.cookie("username", null);
+            $.cookie("expires_in", null);
+            // Reset all steemconnect local data
+            for (var key in this.steemconnect) {
+              this.steemconnect[key] = null;
+            }
+          });
+        },
+        formatDate: function(date) {
+          // Format date from UTC to locale Date
+          return new Date(Date.parse(date)).toLocaleDateString();
+        },
+        follow: function(username) {
+          SC2Utils.follow(steemconnect.user.name, username);
+        },
+        unfollow: function(username) {
+          SC2Utils.unfollow(steemconnect.user.name, username);
+        }
+      }
+    });
+  </script>
+
+</html>
