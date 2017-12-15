@@ -10,11 +10,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
     <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
     <script src="https://steemit.github.io/sc2-angular/sc2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="SC2Utils.js"></script>
+    <script src="js/SC2Utils.js"></script>
     
     <style>
       hr { margin: 40px 0; }
@@ -54,19 +54,10 @@
   </body>
 
   <script>
-    // Parse URL to look after SC2 returned values
-    params = (new URL(location)).searchParams;
-    if (params.get('access_token') != null) 
-      $.cookie("access_token", params.get('access_token'), { expires: 7, path: '/' });
-    if (params.get('username') != null) 
-      $.cookie("username", params.get('username'), { expires: 7, path: '/' });
-    if (params.get('expires_in') != null) 
-      $.cookie("expires_in", params.get('expires_in'), { expires: 7, path: '/' });
-
     // initialize SteemConnect v2
     sc2.init({
       app: 'worldmap.app',
-      callbackURL: 'http://localhost/',
+      callbackURL: 'http://localhost/steemconnect/',
       scope: ['vote', 'comment', 'custom_json'],
       //access: $.cookie("access_token")  // requires latest version ?
     });
