@@ -24,7 +24,7 @@ if ($.cookie("access_token") != null) {
   });
 };
 
-// Initialize the Vue
+// Initialize the Vue Model
 var vm = new Vue({
   el: '#vm',
   data: {
@@ -36,9 +36,9 @@ var vm = new Vue({
       sc2.revokeToken(function (err, result) {
         console.log('You successfully logged out', err, result);
         // Remove all cookies
-        $.cookie("access_token", null);
-        $.cookie("username", null);
-        $.cookie("expires_in", null);
+        $.removeCookie("access_token", { path: '/' });
+        $.removeCookie("username", { path: '/' });
+        $.removeCookie("expires_in", { path: '/' });
         // Reset all steemconnect local data
         for (var key in this.steemconnect) {
           this.steemconnect[key] = null;
