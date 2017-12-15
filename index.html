@@ -25,9 +25,16 @@
   <body>
     <div id="vm">
 
-      <!-- Handle Login/Logout button -->
-      <a v-if="steemconnect.user == null" :href="loginUrl">Login</a>
-      <a v-if="steemconnect.user != null" @click="logout">Logout</a>
+      <!-- Handle Login/Logout/Revoke button -->
+      <div v-if="steemconnect.user == null">
+        <a :href="loginUrl">Login</a>
+      </div>
+      <div v-if="steemconnect.user != null">
+        <a @click="logout">Logout</a><br/>
+        <a href=" https://v2.steemconnect.com/apps/authorized" target="_blank">Revoke Access</a>
+      </div>
+
+      <hr/>
       
       <div v-if="steemconnect.user != null">
 

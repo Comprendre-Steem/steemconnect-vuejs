@@ -3,7 +3,7 @@ sc2.init({
   app: 'worldmap.app',
   callbackURL: 'http://localhost/steemconnect/',
   scope: ['vote', 'comment', 'custom_json'],
-  //access: $.cookie("access_token")  // requires latest version ?
+  //access: $.cookie("access_token")  // requires latest version // use `npm i sc2-sdk --save`
 });
 
 // Need to define an object that will be observed for changes by Vue.js
