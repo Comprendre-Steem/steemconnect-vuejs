@@ -2,7 +2,7 @@
 <html lang="fr">
 
   <head>
-    <title>Demo</title>
+    <title>SteemConnect v2 - Demo App</title>
     <base href="/" />
     <meta charset="UTF-8">
     <meta id="viewport" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
@@ -29,20 +29,16 @@
       <a v-if="steemconnect.user == null" :href="loginUrl">Login</a>
       <a v-if="steemconnect.user != null" @click="logout">Logout</a>
       
-      <!-- Show some user data -->
       <div v-if="steemconnect.user != null">
-        <div>
-          username : {{ steemconnect.user.name }}
-        </div>
-        <div>
-          reputation : {{ steem.formatter.reputation(steemconnect.user.reputation) }}
-        </div>
-        <div>
-          created : {{ formatDate(steemconnect.user.created) }}
-        </div>
+
+        <!-- Show some user data -->
+        <div>username : {{ steemconnect.user.name }}</div>
+        <div>reputation : {{ steem.formatter.reputation(steemconnect.user.reputation) }}</div>
+        <div>created : {{ formatDate(steemconnect.user.created) }}</div>
 
         <hr/>
 
+        <!-- Show some blockchain interactions -->
         <div>
           <button @click="follow('comprendre-steem')">Follow @comprendre-steem</button>
           <button @click="unfollow('comprendre-steem')">Unfollow @comprendre-steem</button>
@@ -51,68 +47,8 @@
       </div>
     </div>
 
+    <!-- Starts the application -->
+    <script src="js/App.js"></script>
   </body>
-
-  <script>
-    // initialize SteemConnect v2
-    sc2.init({
-      app: 'worldmap.app',
-      callbackURL: 'http://localhost/steemconnect/',
-      scope: ['vote', 'comment', 'custom_json'],
-      //access: $.cookie("access_token")  // requires latest version ?
-    });
-
-    // Need to define an object that will be observed for changes by Vue.js
-    var steemconnect = {};
-    steemconnect.user = null;
-    steemconnect.metadata = null;
-
-    // Request user details if token is available
-    if ($.cookie("access_token") != null) {
-      sc2.setAccessToken($.cookie("access_token"));
-      sc2.me(function (err, result) {
-        // console.log('/me', err, result); // DEBUG
-        if (!err) {
-          // Fill the steemconnect placeholder with results
-          steemconnect.user = result.account;
-          steemconnect.metadata = JSON.stringify(result.user_metadata, null, 2);
-        }
-      });
-    };
-
-    // Initialize the Vue
-    var vm = new Vue({
-      el: '#vm',
-      data: {
-        loginUrl: sc2.getLoginURL(),
-        steemconnect: steemconnect
-      },
-      methods: {
-        logout: function() {
-          sc2.revokeToken(function (err, result) {
-            console.log('You successfully logged out', err, result);
-            // Remove all cookies
-            $.cookie("access_token", null);
-            $.cookie("username", null);
-            $.cookie("expires_in", null);
-            // Reset all steemconnect local data
-            for (var key in this.steemconnect) {
-              this.steemconnect[key] = null;
-            }
-          });
-        },
-        formatDate: function(date) {
-          // Format date from UTC to locale Date
-          return new Date(Date.parse(date)).toLocaleDateString();
-        },
-        follow: function(username) {
-          SC2Utils.follow(steemconnect.user.name, username);
-        },
-        unfollow: function(username) {
-          SC2Utils.unfollow(steemconnect.user.name, username);
-        }
-      }
-    });
-  </script>
 
 </html>
