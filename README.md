@@ -16,12 +16,15 @@ First, clone the repository:
 
 > git clone https://github.com/Comprendre-Steem/steemconnect-vuejs.git
 
+Go to that new directory:
+
+> cd steemconnect-vuejs
+
 Then start and http server to access the project.
 Use your favority server (therefor you could use WAMP/LAMP/httpd/...)
 
 This a very simple example with docker httpd image:
 
-> cd steemconnect-vuejs
 > docker run -d --name httpd -p 80:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd
 
 You can now access the demo on http://localhost/
@@ -36,3 +39,11 @@ On success you should see three fields (username, reputation and creation date) 
 
 The main interaction that can be performed on the blockchain are made available using the SC2Utils.js file.
 You can see example of use in the main application (js/App.js).
+
+## Screenshot 
+
+![](https://steemitimages.com/DQmaYdq4VW7sLBng1821qXDnVannGUmaRv6fgACjqXEUN5q/image.png)
+
+## Demo
+
+A live demo is available on : http://steemconnect.surge.sh/

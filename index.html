@@ -30,22 +30,19 @@
         <a :href="loginUrl">Login</a>
       </div>
       <div v-if="steemconnect.user != null">
-        <a @click="logout">Logout</a><br/>
-        <a href=" https://v2.steemconnect.com/apps/authorized" target="_blank">Revoke Access</a>
+        <a @click="logout" href="#">Logout</a><br/>
+        <a href="https://v2.steemconnect.com/apps/authorized" target="_blank">Revoke Access</a>
       </div>
-
-      <hr/>
       
       <div v-if="steemconnect.user != null">
-
         <!-- Show some user data -->
+        <hr/>
         <div>username : {{ steemconnect.user.name }}</div>
         <div>reputation : {{ steem.formatter.reputation(steemconnect.user.reputation) }}</div>
         <div>created : {{ formatDate(steemconnect.user.created) }}</div>
 
-        <hr/>
-
         <!-- Show some blockchain interactions -->
+        <hr/>
         <div>
           <button @click="follow('comprendre-steem')">Follow @comprendre-steem</button>
           <button @click="unfollow('comprendre-steem')">Unfollow @comprendre-steem</button>
