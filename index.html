@@ -7,7 +7,9 @@
     <meta charset="UTF-8">
     <meta id="viewport" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <link rel="stylesheet" href="css/sc2.css">
     <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -25,30 +27,101 @@
   <body>
     <div id="vm">
 
-      <!-- Handle Login/Logout/Revoke button -->
-      <div v-if="steemconnect.user == null">
-        <a :href="loginUrl">Login</a>
-      </div>
-      <div v-if="steemconnect.user != null">
-        <a @click="logout" href="#">Logout</a><br/>
-        <a href="https://v2.steemconnect.com/apps/authorized" target="_blank">Revoke Access</a>
-      </div>
-      
-      <div v-if="steemconnect.user != null">
-        <!-- Show some user data -->
-        <hr/>
-        <div>username : {{ steemconnect.user.name }}</div>
-        <div>reputation : {{ steem.formatter.reputation(steemconnect.user.reputation) }}</div>
-        <div>created : {{ formatDate(steemconnect.user.created) }}</div>
+      <section class="hero is-success is-fullheight" v-if=" steemconnect.user != null">
+        <div class="hero-body">
+          <div class="container has-text-centered">
 
-        <!-- Show some blockchain interactions -->
-        <hr/>
-        <div>
-          <button @click="follow('comprendre-steem')">Follow @comprendre-steem</button>
-          <button @click="unfollow('comprendre-steem')">Unfollow @comprendre-steem</button>
+            <div v-if="message != null" class="notification" :class="message.type">
+              <button class="delete" @click="deleteMessage"></button>
+              {{ message.data }}
+            </div>
+
+            <div class="column is-4 is-offset-4">
+              <div class="box">
+                <figure class="avatar">
+                  <img :src="steemconnect.profile_image" width=128>
+                </figure>
+                <form>
+
+                  <div class="field is-horizontal">
+                    <div class="field-label is-large">
+                      <label class="label">Username</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <input class="input is-large" type="text" placeholder="Username" autofocus="" :value="steemconnect.user.name" disabled>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field is-horizontal">
+                    <div class="field-label is-large">
+                      <label class="label">Reputation</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <input class="input is-large" type="text" placeholder="Reputation" autofocus="" :value="steem.formatter.reputation(steemconnect.user.reputation)" disabled>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field is-horizontal">
+                    <div class="field-label is-large">
+                      <label class="label">Creation</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <input class="input is-large" type="text" placeholder="Creation date" :value="formatDate(steemconnect.user.created)" disabled>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br/>
+                  <p>
+                    <!-- Show some blockchain interactions -->
+                    <button @click.prevent="followAccount('comprendre-steem')" class="button is-success is-small">Follow @comprendre-steem</button>
+                    <button @click.prevent="unfollowAccount('comprendre-steem')" class="button is-warning is-small">Unfollow @comprendre-steem</button>
+                  </p>
+                  <br/>
+                  <p>
+                    <a @click="logout" href="#" class="button is-info is-large">Logout</a> &nbsp;
+                    <a href="https://v2.steemconnect.com/apps/authorized" target="_blank" class="button is-info is-large">Revoke Access</a>
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-      </div>
+      <section class="hero is-success is-fullheight" v-else>
+        <div class="hero-body">
+          <div class="container has-text-centered">
+            <div class="column is-4 is-offset-4">
+              <div class="box">
+                <figure class="avatar">
+                  <img src="img/sc2.png" width=128>
+                </figure>
+                <form>
+                  <a :href="loginUrl" class="button is-block is-info is-large">Login</a>
+                </form>
+              </div>
+              <p class="has-text-grey">
+                <a href="https://steemit.com/pick_account">Steemit.com</a> &nbsp;·&nbsp;
+                <a href="https://v2.steemconnect.com/accounts/create">SteemConnect</a> &nbsp;·&nbsp;
+                <a href="https://anon.steem.network/">AnonSteem</a> &nbsp;·&nbsp;
+                <a href="http://account.steem.vc/">SteemVC</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
 
     <!-- Starts the application -->

@@ -1,7 +1,8 @@
 // initialize SteemConnect v2
 sc2.init({
   app: 'worldmap.app',
-  callbackURL: 'http://localhost/steemconnect/',
+  callbackURL: 'http://localhost/steemconnect/',            // Dev localhost URL
+  //callbackURL: 'http://steemconnect.surge.sh/steemconnect/',  // Live demo URL
   scope: ['vote', 'comment', 'custom_json'],
   //access: $.cookie("access_token")  // requires latest version // use `npm i sc2-sdk --save`
 });
@@ -10,6 +11,7 @@ sc2.init({
 var steemconnect = {};
 steemconnect.user = null;
 steemconnect.metadata = null;
+steemconnect.profile_image = null;
 
 // Request user details if token is available
 if ($.cookie("access_token") != null) {
@@ -20,6 +22,7 @@ if ($.cookie("access_token") != null) {
       // Fill the steemconnect placeholder with results
       steemconnect.user = result.account;
       steemconnect.metadata = JSON.stringify(result.user_metadata, null, 2);
+      steemconnect.profile_image = JSON.parse(vm.$data.steemconnect.user.json_metadata)['profile']['profile_image'];
     }
   });
 };
@@ -29,7 +32,8 @@ var vm = new Vue({
   el: '#vm',
   data: {
     loginUrl: sc2.getLoginURL(),
-    steemconnect: steemconnect
+    steemconnect: steemconnect,
+    message: null
   },
   methods: {
     logout: function() {
@@ -49,11 +53,35 @@ var vm = new Vue({
       // Format date from UTC to locale Date
       return new Date(Date.parse(date)).toLocaleDateString();
     },
-    follow: function(username) {
-      SC2Utils.follow(steemconnect.user.name, username);
+    createMessage: function(type, data) {
+      this.message = {type: type, data: data}
     },
-    unfollow: function(username) {
-      SC2Utils.unfollow(steemconnect.user.name, username);
+    deleteMessage: function() {
+      this.message = null
+    },
+    followAccount: function(username) {
+      app = this
+      sc2.follow(steemconnect.user.name, username, function (err, res) {
+        if (!err) {
+          app.createMessage("is-success", "You successfully followed @" + username)
+          console.log(app.message.data, err, res);
+        } else {
+          console.log(err);
+          app.createMessage("is-danger", err)
+        }
+      });
+    },
+    unfollowAccount: function(username) {
+      app = this
+      sc2.unfollow(steemconnect.user.name, username, function (err, res) {
+        if (!err) {
+          app.createMessage("is-warning", "You successfully unfollowed @" + username)
+          console.log(app.message.data, err, res);
+        } else {
+          console.log(err);
+          app.createMessage("is-danger", err)
+        }
+      });
     }
   }
 });
