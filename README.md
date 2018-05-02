@@ -1,4 +1,4 @@
-# SteemConnect v2 demo app
+# SteemConnect v2 demo app TEST Jake
 
 This simple project has been created to learn and demonstrate the usage of SteemConnect v2.
 
@@ -47,3 +47,6 @@ You can see example of use in the main application (js/App.js).
 ## Demo
 
 A live demo is available on : http://steemconnect.surge.sh/
+
+
+NEW PARAGRAPH 2
