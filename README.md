@@ -49,4 +49,4 @@ You can see example of use in the main application (js/App.js).
 A live demo is available on : http://steemconnect.surge.sh/
 
 
-NEW PARAGRAPH
+NEW PARAGRAPH 2
