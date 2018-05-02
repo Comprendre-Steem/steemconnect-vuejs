@@ -1,4 +1,4 @@
-# SteemConnect v2 demo app 2
+# SteemConnect v2 demo app TEST Jake
 
 This simple project has been created to learn and demonstrate the usage of SteemConnect v2.
 
